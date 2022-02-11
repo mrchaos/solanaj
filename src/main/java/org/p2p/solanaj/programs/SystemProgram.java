@@ -26,6 +26,21 @@ public class SystemProgram extends Program {
 
         return createTransactionInstruction(PROGRAM_ID, keys, data);
     }
+    
+    public static TransactionInstruction transfer(PublicKey fromPublicKey, PublicKey toPublickKey, PublicKey feePayerPubKey, long lamports) {
+        ArrayList<AccountMeta> keys = new ArrayList<AccountMeta>();        
+        keys.add(new AccountMeta(fromPublicKey, true, true));
+        keys.add(new AccountMeta(toPublickKey, false, true));
+        keys.add(new AccountMeta(feePayerPubKey, true, true));
+        
+        // 4 byte instruction index + 8 bytes lamports
+        byte[] data = new byte[4 + 8];
+        uint32ToByteArrayLE(PROGRAM_INDEX_TRANSFER, data, 0);
+        int64ToByteArrayLE(lamports, data, 4);
+
+        return createTransactionInstruction(PROGRAM_ID, keys, data);
+    }
+
 
     public static TransactionInstruction createAccount(PublicKey fromPublicKey, PublicKey newAccountPublikkey,
             long lamports, long space, PublicKey programId) {
