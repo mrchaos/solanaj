@@ -27,7 +27,7 @@ public class SystemProgram extends Program {
         return createTransactionInstruction(PROGRAM_ID, keys, data);
     }
     
-    public static TransactionInstruction transfer(PublicKey fromPublicKey, PublicKey toPublickKey, PublicKey feePayerPubKey, long lamports) {
+    public static TransactionInstruction transfer(PublicKey fromPublicKey, PublicKey toPublickKey, long lamports,PublicKey feePayerPubKey) {
         ArrayList<AccountMeta> keys = new ArrayList<AccountMeta>();        
         keys.add(new AccountMeta(fromPublicKey, true, true));
         keys.add(new AccountMeta(toPublickKey, false, true));

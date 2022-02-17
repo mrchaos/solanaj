@@ -32,7 +32,7 @@ public class SystemProgramTest {
         int lamports = 3000;
 
         TransactionInstruction instruction = SystemProgram.transfer(fromPublicKey, toPublickKey, 
-            feePayerPublicKey,lamports);
+            lamports,feePayerPublicKey);
 
         assertEquals(SystemProgram.PROGRAM_ID, instruction.getProgramId());
         assertEquals(3, instruction.getKeys().size());
