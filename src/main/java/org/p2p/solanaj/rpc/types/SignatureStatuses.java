@@ -21,6 +21,9 @@ public class SignatureStatuses extends RpcResultObject {
 
         @Json(name = "confirmationStatus")
         private String confirmationStatus;
+
+        @Json(name = "err")
+        private Object err;        
     }
 
     @Json(name = "value")
