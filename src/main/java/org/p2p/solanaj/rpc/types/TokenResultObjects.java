@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import java.util.AbstractMap;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TokenResultObjects {
 
@@ -31,7 +33,7 @@ public class TokenResultObjects {
             this.amount = (String) am.get("amount");
             this.decimals = (int) (double) am.get("decimals");
             this.uiAmount = (Double) am.get("uiAmount");
-            this.uiAmountString = (String) am.get("uiAmountString");
+            this.uiAmountString = (String) am.get("uiAmountString");            
         }
     }
 
@@ -69,10 +71,28 @@ public class TokenResultObjects {
         @Json(name = "tokenAmount")
         private TokenAmountInfo tokenAmount;
     }
-
     @Getter
     @ToString
-    public static class ParsedData {
+    public static class MintInfo {
+
+        @Json(name = "decimals")
+        private int decimals;
+
+        @Json(name = "freezeAuthority")
+        private String freezeAuthority;
+
+        @Json(name = "isInitialized")
+        private boolean isInitialized;
+
+        @Json(name = "mintAuthority")
+        private String mintAuthority;
+
+        @Json(name = "supply")
+        private String supply;
+    }
+    @Getter
+    @ToString
+    public static class TokenParsedData {
 
         @Json(name = "info")
         private TokenInfo info;
@@ -80,38 +100,68 @@ public class TokenResultObjects {
         @Json(name = "type")
         private String type;
     }
+    @Getter
+    @ToString
+    public static class MintParsedData {
 
+        @Json(name = "info")
+        private MintInfo info;
+
+        @Json(name = "type")
+        private String type;
+    }
     @Getter
     @ToString
     public static class Data {
 
-        @Json(name = "parsed")
-        private ParsedData parsed;
-
         @Json(name = "program")
-        private String program;
+        protected String program;
 
         @Json(name = "space")
-        private Integer space;
+        protected Integer space;        
     }
+    @Getter
+    @ToString
+    public static class TokenData extends Data {
 
+        @Json(name = "parsed")
+        private TokenParsedData parsed;    
+    }
+    @Getter
+    @ToString
+    public static class MintData extends Data {
+
+        @Json(name = "parsed")
+        private MintParsedData parsed;      
+    }
     @Getter
     @ToString
     public static class Value {
 
-        @Json(name = "data")
-        private Data data;
-
         @Json(name = "executable")
-        private boolean executable;
+        protected boolean executable;
 
         @Json(name = "lamports")
-        private long lamports;
+        protected long lamports;
 
         @Json(name = "owner")
-        private String owner;
+        protected String owner;
 
         @Json(name = "rentEpoch")
-        private long rentEpoch;
-    }
+        protected long rentEpoch;
+    }    
+    @Getter
+    @ToString
+    public static class TokenValue extends Value {
+
+        @Json(name = "data")
+        private TokenData data;    
+    }    
+    @Getter
+    @ToString
+    public static class MintValue extends Value {
+
+        @Json(name = "data")
+        private MintData data;
+    }          
 }

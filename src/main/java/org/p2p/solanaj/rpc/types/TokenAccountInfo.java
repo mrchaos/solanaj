@@ -15,7 +15,7 @@ public class TokenAccountInfo extends RpcResultObject {
     public static class Value {
 
         @Json(name = "account")
-        private TokenResultObjects.Value account;
+        private TokenResultObjects.TokenValue account;
 
         @Json(name = "pubkey")
         private String pubkey;

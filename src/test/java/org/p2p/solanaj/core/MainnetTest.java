@@ -415,9 +415,6 @@ public class MainnetTest extends AccountBasedTest {
 
     //@Test
     public void getTokenAccountsByDelegateTest() throws RpcException {
-        //2022.02.17 MrChaos
-        Timeout에러로 테스트진행 어려움 : 테스트 Pass 처리 
-
 
         Map<String, Object> requiredParams = Map.of("mint", USDC_TOKEN_MINT);
         TokenAccountInfo tokenAccount = client.getApi().getTokenAccountsByDelegate(PublicKey.valueOf(

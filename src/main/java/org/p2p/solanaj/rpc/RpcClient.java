@@ -45,19 +45,30 @@ public class RpcClient {
         rpcApi = new RpcApi(this);
     }
 
-    public <T> T call(String method, List<Object> params, Class<T> clazz) throws RpcException {
+    public String callApi(String method, List<Object> params) throws RpcException {
         RpcRequest rpcRequest = new RpcRequest(method, params);
 
         JsonAdapter<RpcRequest> rpcRequestJsonAdapter = new Moshi.Builder().build().adapter(RpcRequest.class);
-        JsonAdapter<RpcResponse<T>> resultAdapter = new Moshi.Builder().build()
-                .adapter(Types.newParameterizedType(RpcResponse.class, Type.class.cast(clazz)));
-
         Request request = new Request.Builder().url(getEndpoint())
                 .post(RequestBody.create(rpcRequestJsonAdapter.toJson(rpcRequest), JSON)).build();
 
         try {
             Response response = httpClient.newCall(request).execute();
-            final String result = response.body().string();
+            return response.body().string();
+        } catch (SSLHandshakeException e) {
+            this.httpClient = new OkHttpClient.Builder().build();
+            throw new RpcException(e.getMessage());
+        } catch (IOException e) {
+            throw new RpcException(e.getMessage());
+        }
+    }
+
+    public <T> T call(String method, List<Object> params, Class<T> clazz) throws RpcException {
+
+        JsonAdapter<RpcResponse<T>> resultAdapter = new Moshi.Builder().build()
+                .adapter(Types.newParameterizedType(RpcResponse.class, Type.class.cast(clazz)));
+        try {
+            final String result = callApi(method, params);
             // System.out.println("Response = " + result);
             RpcResponse<T> rpcResult = resultAdapter.fromJson(result);
 

@@ -69,6 +69,5 @@ public class AccountTest {
 
         Logger.getAnonymousLogger().info("Derived pubkey = " + account.getPublicKey().toBase58());
         assertEquals("BeepMww3KwiDeEhEeZmqk4TegvJYNuDERPWm142X6Mx3", account.getPublicKey().toBase58());
-    }
-
+    }    
 }

@@ -1,7 +1,16 @@
 package org.p2p.solanaj.rpc;
 
 import java.util.*;
+import java.io.IOException;
+import java.lang.reflect.Type;
 import java.util.stream.Collectors;
+
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
+import com.squareup.moshi.JsonAdapter;
+import com.squareup.moshi.Moshi;
+import com.squareup.moshi.Types;
+
 import org.p2p.solanaj.core.Account;
 import org.p2p.solanaj.core.PublicKey;
 import org.p2p.solanaj.core.Transaction;
@@ -236,6 +245,24 @@ public class RpcApi {
         return client.call("getAccountInfo", params, AccountInfo.class);
     }
 
+    public Object getAccountInfoJson(PublicKey account) throws RpcException, IOException {
+        List<Object> params = new ArrayList<>();
+        Map<String, Object> parameterMap = new HashMap<>();
+        parameterMap.put("encoding", "jsonParsed");
+
+        params.add(account.toString());
+        params.add(parameterMap);
+        String json = client.callApi("getAccountInfo", params);
+
+        JsonAdapter<RpcResponse<Object>> resultAdapter = new Moshi.Builder().build()
+        .adapter(Types.newParameterizedType(RpcResponse.class, Object.class));
+        RpcResponse<Object> rpcResult = resultAdapter.fromJson(json);
+
+        if (rpcResult.getError() != null) {
+            throw new RpcException(rpcResult.getError().getMessage());
+        }
+        return rpcResult.getResult();
+    }    
     public SplTokenAccountInfo getSplTokenAccountInfo(PublicKey account) throws RpcException {
         List<Object> params = new ArrayList<>();
         Map<String, Object> parameterMap = new HashMap<>();
@@ -246,6 +273,16 @@ public class RpcApi {
 
         return client.call("getAccountInfo", params, SplTokenAccountInfo.class);
     }
+    public SplTokenMintInfo getSplTokenMintInfo(PublicKey account) throws RpcException {
+        List<Object> params = new ArrayList<>();
+        Map<String, Object> parameterMap = new HashMap<>();
+        parameterMap.put("encoding", "jsonParsed");
+
+        params.add(account.toString());
+        params.add(parameterMap);
+
+        return client.call("getAccountInfo", params, SplTokenMintInfo.class);
+    }    
 
     public long getMinimumBalanceForRentExemption(long dataLength) throws RpcException {
         return getMinimumBalanceForRentExemption(dataLength, null);
