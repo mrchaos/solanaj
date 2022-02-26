@@ -1,12 +1,8 @@
 package org.p2p.solanaj.rpc;
 
 import java.util.*;
-import java.io.IOException;
-import java.lang.reflect.Type;
 import java.util.stream.Collectors;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonObject;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.Moshi;
 import com.squareup.moshi.Types;
@@ -34,6 +30,10 @@ import org.p2p.solanaj.rpc.types.config.Commitment;
 import org.p2p.solanaj.rpc.types.config.VoteAccountConfig;
 import org.p2p.solanaj.ws.SubscriptionWebSocketClient;
 import org.p2p.solanaj.ws.listeners.NotificationEventListener;
+
+import org.p2p.solanaj.utils.JsonUtils;
+import org.p2p.solanaj.programs.SystemProgram;
+import org.p2p.solanaj.programs.TokenProgram;
 
 public class RpcApi {
     private RpcClient client;
@@ -245,7 +245,15 @@ public class RpcApi {
         return client.call("getAccountInfo", params, AccountInfo.class);
     }
 
-    public Object getAccountInfoJson(PublicKey account) throws RpcException, IOException {
+    /**
+     * account type에 따른 account정보를 return
+     * @param account account publickey - account, token, mint
+     * @return account인 경우: AccountInfo, 
+     *         token : SplAccountInfo,
+     *         mint  : SplMintInfo
+     * @throws Exception
+     */
+    public Object getAccountInfo2(PublicKey account) throws Exception {        
         List<Object> params = new ArrayList<>();
         Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("encoding", "jsonParsed");
@@ -261,9 +269,30 @@ public class RpcApi {
         if (rpcResult.getError() != null) {
             throw new RpcException(rpcResult.getError().getMessage());
         }
-        return rpcResult.getResult();
+
+        final Object accountObj = rpcResult.getResult();
+
+        final String progID = (String) JsonUtils.getObjectFromMap("value.owner", accountObj);
+        // SystemProgram인 경우 Native Account
+        if(progID.equals(SystemProgram.PROGRAM_ID.toString())) {                
+            return JsonUtils.castJson(accountObj,AccountInfo.class);
+        }            
+        else if(progID.equals(TokenProgram.PROGRAM_ID.toString())) {
+            String type = (String)JsonUtils.getObjectFromMap(
+                    "value.data.parsed.type", accountObj);
+            if(type.equals("account")) {
+                return JsonUtils.castJson(accountObj,SplAccountInfo.class);
+            }
+            else if(type.equals("mint")) {
+                return JsonUtils.castJson(accountObj,SplMintInfo.class);
+            }
+            else {
+                throw new RuntimeException("Not supported account type");
+            }
+        }
+        return null; 
     }    
-    public SplTokenAccountInfo getSplTokenAccountInfo(PublicKey account) throws RpcException {
+    public SplAccountInfo getSplAccountInfo(PublicKey account) throws RpcException {
         List<Object> params = new ArrayList<>();
         Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("encoding", "jsonParsed");
@@ -271,9 +300,9 @@ public class RpcApi {
         params.add(account.toString());
         params.add(parameterMap);
 
-        return client.call("getAccountInfo", params, SplTokenAccountInfo.class);
+        return client.call("getAccountInfo", params, SplAccountInfo.class);
     }
-    public SplTokenMintInfo getSplTokenMintInfo(PublicKey account) throws RpcException {
+    public SplMintInfo getSplMintInfo(PublicKey account) throws RpcException {
         List<Object> params = new ArrayList<>();
         Map<String, Object> parameterMap = new HashMap<>();
         parameterMap.put("encoding", "jsonParsed");
@@ -281,7 +310,7 @@ public class RpcApi {
         params.add(account.toString());
         params.add(parameterMap);
 
-        return client.call("getAccountInfo", params, SplTokenMintInfo.class);
+        return client.call("getAccountInfo", params, SplMintInfo.class);
     }    
 
     public long getMinimumBalanceForRentExemption(long dataLength) throws RpcException {
@@ -456,6 +485,7 @@ public class RpcApi {
         List<Object> params = new ArrayList<Object>();
 
         // TODO - fix uncasted type stuff
+        @SuppressWarnings({"rawtypes","unchecked"})
         List<AbstractMap> rawResult = client.call("getClusterNodes", params, List.class);
 
         List<ClusterNode> result = new ArrayList<>();
@@ -538,11 +568,13 @@ public class RpcApi {
         parameterMap.put("mint", tokenMint.toBase58());
         params.add(parameterMap);
 
+        @SuppressWarnings({"unchecked"})
         Map<String, Object> rawResult = client.call("getTokenAccountsByOwner", params, Map.class);
 
         PublicKey tokenAccountKey;
 
         try {
+            @SuppressWarnings({"rawtypes"})
             String base58 = (String) ((Map) ((List) rawResult.get("value")).get(0)).get("pubkey");
             tokenAccountKey = new PublicKey(base58);
 
@@ -590,9 +622,10 @@ public class RpcApi {
         }
         params.add(rpcEpochConfig);
 
+        @SuppressWarnings({"rawtypes","unchecked"})
         List<AbstractMap> rawResult = client.call("getInflationReward", params, List.class);
 
-        List<InflationReward> result = new ArrayList<>();
+        List<InflationReward> result = new ArrayList<>();        
         for (AbstractMap item : rawResult) {
             result.add(new InflationReward(item));
         }
@@ -634,6 +667,7 @@ public class RpcApi {
         params.add(startSlot);
         params.add(limit);
 
+        @SuppressWarnings({"unchecked"})
         List<String> rawResult = client.call("getSlotLeaders", params, List.class);
 
         List<PublicKey> result = new ArrayList<>();
@@ -653,6 +687,7 @@ public class RpcApi {
     }
 
     public PublicKey getIdentity() throws RpcException {
+        @SuppressWarnings({"unchecked"})
         Map<String, Object> rawResult = client.call("getIdentity", new ArrayList<>(), Map.class);
 
         PublicKey identity;
@@ -719,7 +754,7 @@ public class RpcApi {
         if (null != commitment) {
             params.add(Map.of("commitment", commitment.getValue()));
         }
-
+        @SuppressWarnings({"unchecked"})
         Map<String, Object> rawResult = client.call("getTokenAccountBalance", params, Map.class);
 
         return new TokenAmountInfo((AbstractMap) rawResult.get("value"));
@@ -736,7 +771,7 @@ public class RpcApi {
         if (null != commitment) {
             params.add(Map.of("commitment", commitment.getValue()));
         }
-
+        @SuppressWarnings({"unchecked"})
         Map<String, Object> rawResult =  client.call("getTokenSupply", params, Map.class);
 
         return new TokenAmountInfo((AbstractMap) rawResult.get("value"));
@@ -753,9 +788,10 @@ public class RpcApi {
         if (null != commitment) {
             params.add(Map.of("commitment", commitment.getValue()));
         }
-
+        
+        @SuppressWarnings({"unchecked"})
         Map<String, Object> rawResult = client.call("getTokenLargestAccounts", params, Map.class);
-
+        
         List<TokenAccount> result = new ArrayList<>();
         for (AbstractMap item : (List<AbstractMap>) rawResult.get("value")) {
             result.add(new TokenAccount(item));

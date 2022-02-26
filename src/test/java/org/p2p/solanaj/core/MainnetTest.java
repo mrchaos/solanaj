@@ -80,7 +80,7 @@ public class MainnetTest extends AccountBasedTest {
     //@Test
     public void getAccountInfoJsonParsed() {
         try {
-            final SplTokenAccountInfo accountInfo = client.getApi().getSplTokenAccountInfo(
+            final SplAccountInfo accountInfo = client.getApi().getSplAccountInfo(
                     PublicKey.valueOf("8tnpAECxAT9nHBqR1Ba494Ar5dQMPGhL31MmPJz1zZvY")
             );
 

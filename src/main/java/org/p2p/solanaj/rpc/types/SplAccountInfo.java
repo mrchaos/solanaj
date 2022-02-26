@@ -6,7 +6,8 @@ import lombok.ToString;
 
 @Getter
 @ToString
-public class SplTokenMintInfo extends RpcResultObject {
+public class SplAccountInfo extends RpcResultObject {
+
     @Json(name = "value")
-    private TokenResultObjects.MintValue value;    
+    private TokenResultObjects.TokenValue value;
 }
