@@ -8,7 +8,6 @@ import java.util.Objects;
 import com.squareup.moshi.JsonAdapter;
 import com.squareup.moshi.JsonWriter;
 import com.squareup.moshi.Moshi;
-
 import org.p2p.solanaj.rpc.RpcException;
 
 import okio.Buffer;
@@ -27,11 +26,11 @@ public class JsonUtils {
      * @return path에 해당하는 object
      * @throws Exception
      */
+    @SuppressWarnings("unchecked")
     static public Object getObjectFromMap(String path, Object map ) throws Exception {
-        @SuppressWarnings("unchecked")
         Map<String,Object> m = (Map<String,Object>)map;
         String[] keys = path.split("\\.");
-        Object obj = null;
+        Object obj = null;        
         String key = null;
         for (int i=0; i < keys.length; i++) {
             key = keys[i];
@@ -81,19 +80,21 @@ public class JsonUtils {
      * @return
      * @throws IOException
      */
-    static public String toJsonString(Object obj,boolean pretty) throws IOException {
+    // @SuppressWarnings("unchecked")
+    static public String toJsonString(Object obj,boolean pretty) throws IOException {        
         if (!Objects.isNull(obj)) {
-            final Moshi moshi = new Moshi.Builder().build();
+            final Moshi moshi = new Moshi.Builder()
+                        .build();
             final Buffer buffer = new Buffer();
             final JsonWriter jsonWriter = JsonWriter.of(buffer);
             if(pretty) {
                 jsonWriter.setIndent(" ");
             }
-            // null도 표현될 수 있데 serializeNulls 적용
+            // null도 표현될 수 있데 serializeNulls 적용  
             moshi.adapter(Object.class)
                 .serializeNulls().toJson(jsonWriter,obj);            
             return buffer.readUtf8();
         }
         return null; 
-    }    
+    }
 }

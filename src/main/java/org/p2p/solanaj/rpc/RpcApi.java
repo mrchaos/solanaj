@@ -221,13 +221,13 @@ public class RpcApi {
     }
 
     public AccountInfo getAccountInfo(PublicKey account) throws RpcException {
-        return getAccountInfo(account, new HashMap<>());
+        return getAccountInfo(account, new LinkedHashMap<>());
     }
 
     public AccountInfo getAccountInfo(PublicKey account, Map<String, Object> additionalParams) throws RpcException {
         List<Object> params = new ArrayList<>();
 
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
 
         parameterMap.put("encoding", additionalParams.getOrDefault("encoding", "base64"));
 
@@ -255,7 +255,7 @@ public class RpcApi {
      */
     public Object getAccountInfo2(PublicKey account) throws Exception {        
         List<Object> params = new ArrayList<>();
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
         parameterMap.put("encoding", "jsonParsed");
 
         params.add(account.toString());
@@ -294,7 +294,7 @@ public class RpcApi {
     }    
     public SplAccountInfo getSplAccountInfo(PublicKey account) throws RpcException {
         List<Object> params = new ArrayList<>();
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
         parameterMap.put("encoding", "jsonParsed");
 
         params.add(account.toString());
@@ -304,7 +304,7 @@ public class RpcApi {
     }
     public SplMintInfo getSplMintInfo(PublicKey account) throws RpcException {
         List<Object> params = new ArrayList<>();
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
         parameterMap.put("encoding", "jsonParsed");
 
         params.add(account.toString());
@@ -356,14 +356,14 @@ public class RpcApi {
     }
 
     public BlockProduction getBlockProduction() throws RpcException {
-        return getBlockProduction(new HashMap<>());
+        return getBlockProduction(new LinkedHashMap<>());
     }
 
     // TODO - implement the parameters - currently takes in none
     public BlockProduction getBlockProduction(Map<String, Object> optionalParams) throws RpcException {
         List<Object> params = new ArrayList<>();
 
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
         if (optionalParams.containsKey("commitment")) {
             Commitment commitment = (Commitment) optionalParams.get("commitment");
             parameterMap.put("commitment", commitment.getValue());
@@ -564,7 +564,7 @@ public class RpcApi {
         List<Object> params = new ArrayList<>();
         params.add(owner.toBase58());
 
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
         parameterMap.put("mint", tokenMint.toBase58());
         params.add(parameterMap);
 
@@ -781,6 +781,7 @@ public class RpcApi {
         return getTokenLargestAccounts(tokenMint, null);
     }
 
+    @SuppressWarnings({"unchecked","rawtypes"})
     public List<TokenAccount> getTokenLargestAccounts(PublicKey tokenMint, Commitment commitment) throws RpcException {
         List<Object> params = new ArrayList<>();
         params.add(tokenMint.toString());
@@ -789,7 +790,7 @@ public class RpcApi {
             params.add(Map.of("commitment", commitment.getValue()));
         }
         
-        @SuppressWarnings({"unchecked"})
+        
         Map<String, Object> rawResult = client.call("getTokenLargestAccounts", params, Map.class);
         
         List<TokenAccount> result = new ArrayList<>();
@@ -816,7 +817,7 @@ public class RpcApi {
         params.add(account.toString());
 
         // Either mint or programId is required
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
         if (requiredParams.containsKey("mint")) {
             parameterMap.put("mint", requiredParams.get("mint").toString());
         } else if (requiredParams.containsKey("programId")) {
@@ -827,7 +828,7 @@ public class RpcApi {
         params.add(parameterMap);
 
         if (null != optionalParams) {
-            parameterMap = new HashMap<>();
+            parameterMap = new LinkedHashMap<>();
             parameterMap.put("encoding", optionalParams.getOrDefault("encoding", "jsonParsed"));
             if (optionalParams.containsKey("commitment")) {
                 Commitment commitment = (Commitment) optionalParams.get("commitment");
@@ -981,14 +982,14 @@ public class RpcApi {
     }
 
     public List<AccountInfo.Value> getMultipleAccounts(List<PublicKey> publicKeys) throws RpcException {
-        return getMultipleAccounts(publicKeys, new HashMap<>());
+        return getMultipleAccounts(publicKeys, new LinkedHashMap<>());
     }
 
     public List<AccountInfo.Value> getMultipleAccounts(List<PublicKey> publicKeys, Map<String, Object> additionalParams) throws RpcException {
         List<Object> params = new ArrayList<>();
         params.add(publicKeys.stream().map(PublicKey::toBase58).collect(Collectors.toList()));
 
-        Map<String, Object> parameterMap = new HashMap<>();
+        Map<String, Object> parameterMap = new LinkedHashMap<>();
 
         parameterMap.put("encoding", additionalParams.getOrDefault("encoding", "base64"));
 
