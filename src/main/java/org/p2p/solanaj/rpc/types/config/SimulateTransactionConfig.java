@@ -7,6 +7,7 @@ import org.p2p.solanaj.rpc.types.config.RpcSendTransactionConfig.Encoding;
 
 import com.squareup.moshi.Json;
 
+@SuppressWarnings({"rawtypes" })
 @Setter
 public class SimulateTransactionConfig {
 

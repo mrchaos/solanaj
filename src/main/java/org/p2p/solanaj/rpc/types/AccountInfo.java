@@ -14,7 +14,8 @@ public class AccountInfo extends RpcResultObject {
     @Getter
     @ToString
     public static class Value {
-
+        
+        @SuppressWarnings({ "unchecked", "rawtypes" })
         public Value(AbstractMap am) {
             this.data = (List) am.get("data");
             this.executable = (boolean) am.get("executable");

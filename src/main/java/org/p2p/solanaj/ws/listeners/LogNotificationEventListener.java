@@ -6,6 +6,7 @@ import org.p2p.solanaj.rpc.RpcClient;
 import java.util.AbstractMap;
 import java.util.logging.Logger;
 
+@SuppressWarnings("unused")
 public class LogNotificationEventListener implements NotificationEventListener {
 
     private static final Logger LOGGER = Logger.getLogger(LogNotificationEventListener.class.getName());
@@ -21,7 +22,7 @@ public class LogNotificationEventListener implements NotificationEventListener {
      * Handle Account notification event (change in data or change in lamports). Type of "data" is a Map.
      * @param data Map
      */
-    @SuppressWarnings("rawtypes")
+    @SuppressWarnings({ "unchecked"})
     @Override
     public void onNotificationEvent(Object data) {
         if (data != null) {

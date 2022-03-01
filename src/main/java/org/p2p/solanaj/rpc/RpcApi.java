@@ -480,12 +480,11 @@ public class RpcApi {
         return simulatedTransaction;
     }
 
-
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<ClusterNode> getClusterNodes() throws RpcException {
         List<Object> params = new ArrayList<Object>();
 
         // TODO - fix uncasted type stuff
-        @SuppressWarnings({"rawtypes","unchecked"})
         List<AbstractMap> rawResult = client.call("getClusterNodes", params, List.class);
 
         List<ClusterNode> result = new ArrayList<>();
@@ -606,7 +605,8 @@ public class RpcApi {
     public List<InflationReward> getInflationReward(List<PublicKey> addresses) throws RpcException {
         return getInflationReward(addresses, null, null);
     }
-
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<InflationReward> getInflationReward(List<PublicKey> addresses, Long epoch, Commitment commitment)
             throws RpcException {
         List<Object> params = new ArrayList<>();
@@ -622,7 +622,6 @@ public class RpcApi {
         }
         params.add(rpcEpochConfig);
 
-        @SuppressWarnings({"rawtypes","unchecked"})
         List<AbstractMap> rawResult = client.call("getInflationReward", params, List.class);
 
         List<InflationReward> result = new ArrayList<>();        
@@ -728,6 +727,7 @@ public class RpcApi {
      * Returns a list of confirmed blocks between two slots
      * DEPRECATED: use getBlocks instead
      */
+    @SuppressWarnings({ "unchecked"})
     @Deprecated
     public List<Double> getConfirmedBlocks(Integer start, Integer end) throws RpcException {
         List<Object> params;
@@ -746,7 +746,7 @@ public class RpcApi {
     public TokenResultObjects.TokenAmountInfo getTokenAccountBalance(PublicKey tokenAccount) throws RpcException {
         return getTokenAccountBalance(tokenAccount, null);
     }
-
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public TokenResultObjects.TokenAmountInfo getTokenAccountBalance(PublicKey tokenAccount, Commitment commitment) throws RpcException {
         List<Object> params = new ArrayList<>();
         params.add(tokenAccount.toString());
@@ -754,7 +754,6 @@ public class RpcApi {
         if (null != commitment) {
             params.add(Map.of("commitment", commitment.getValue()));
         }
-        @SuppressWarnings({"unchecked"})
         Map<String, Object> rawResult = client.call("getTokenAccountBalance", params, Map.class);
 
         return new TokenAmountInfo((AbstractMap) rawResult.get("value"));
@@ -764,6 +763,7 @@ public class RpcApi {
         return getTokenSupply(tokenMint, null);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public TokenAmountInfo getTokenSupply(PublicKey tokenMint, Commitment commitment) throws RpcException {
         List<Object> params = new ArrayList<>();
         params.add(tokenMint.toString());
@@ -771,7 +771,6 @@ public class RpcApi {
         if (null != commitment) {
             params.add(Map.of("commitment", commitment.getValue()));
         }
-        @SuppressWarnings({"unchecked"})
         Map<String, Object> rawResult =  client.call("getTokenSupply", params, Map.class);
 
         return new TokenAmountInfo((AbstractMap) rawResult.get("value"));
@@ -890,7 +889,8 @@ public class RpcApi {
 
         return client.call("getSignatureStatuses", params, SignatureStatuses.class);
     }
-
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<PerformanceSample> getRecentPerformanceSamples() throws RpcException {
         List<Object> params = new ArrayList<>();
 
@@ -904,6 +904,7 @@ public class RpcApi {
         return result;
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<PerformanceSample> getRecentPerformanceSamples(int limit) throws RpcException {
         List<Object> params = new ArrayList<>();
         params.add(limit);
@@ -929,6 +930,7 @@ public class RpcApi {
         return getLargestAccounts(null, null);
     }
 
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<LargeAccount> getLargestAccounts(String filter, Commitment commitment) throws RpcException {
         List<Object> params = new ArrayList<>();
 
@@ -955,6 +957,7 @@ public class RpcApi {
         return getLeaderSchedule(null, null, null);
     }
 
+    @SuppressWarnings({ "unchecked"})
     public List<LeaderSchedule> getLeaderSchedule(Long epoch, String identity, Commitment commitment) throws RpcException {
         List<Object> params = new ArrayList<>();
 
@@ -984,7 +987,8 @@ public class RpcApi {
     public List<AccountInfo.Value> getMultipleAccounts(List<PublicKey> publicKeys) throws RpcException {
         return getMultipleAccounts(publicKeys, new LinkedHashMap<>());
     }
-
+    
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public List<AccountInfo.Value> getMultipleAccounts(List<PublicKey> publicKeys, Map<String, Object> additionalParams) throws RpcException {
         List<Object> params = new ArrayList<>();
         params.add(publicKeys.stream().map(PublicKey::toBase58).collect(Collectors.toList()));

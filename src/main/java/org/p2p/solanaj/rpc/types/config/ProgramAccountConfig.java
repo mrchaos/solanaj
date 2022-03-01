@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.p2p.solanaj.rpc.types.config.RpcSendTransactionConfig.Encoding;
 
+@SuppressWarnings("unused")
 public class ProgramAccountConfig {
 
     private Encoding encoding = null;

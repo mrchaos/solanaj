@@ -20,6 +20,7 @@ public class WebsocketTest {
 
     @Test
     @Ignore
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public void pythWebsocketTest() {
         devnetClient.accountSubscribe(
                 PublicKey.valueOf("E36MyBbavhYKHVLWR79GiReNNnBDiHj6nWA7htbkNZbh").toBase58(),

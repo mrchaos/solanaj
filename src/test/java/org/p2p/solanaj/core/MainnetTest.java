@@ -2,7 +2,6 @@ package org.p2p.solanaj.core;
 
 import org.junit.Before;
 import org.junit.Ignore;
-import org.junit.Test;
 import org.p2p.solanaj.programs.MemoProgram;
 import org.p2p.solanaj.programs.SystemProgram;
 import org.p2p.solanaj.rpc.Cluster;
@@ -14,7 +13,6 @@ import org.p2p.solanaj.rpc.types.config.Commitment;
 import org.p2p.solanaj.token.TokenManager;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.*;
 
@@ -601,6 +599,7 @@ public class MainnetTest extends AccountBasedTest {
     }
 
     //@Test
+    @SuppressWarnings( "deprecation" )
     public void getConfirmedBlockTest() throws RpcException {
         ConfirmedBlock block = this.client.getApi().getConfirmedBlock(74953539);
         assertEquals(74953538, block.getParentSlot());
@@ -614,6 +613,7 @@ public class MainnetTest extends AccountBasedTest {
     }
 
     //@Test
+    @SuppressWarnings( "deprecation" )
     public void getConfirmedBlocksTest() throws RpcException {
         List<Double> blocks = this.client.getApi().getConfirmedBlocks(5);
         List<Double> singleBlock = this.client.getApi().getConfirmedBlocks(5, 5);

@@ -44,6 +44,7 @@ public class AccountTest {
     }
 
     @Test
+    @SuppressWarnings( "deprecation" )
     public void fromMnemonic() {
         Account acc = Account.fromMnemonic(Arrays.asList("spider", "federal", "bleak", "unable", "ask", "weasel",
                 "diamond", "electric", "illness", "wheat", "uphold", "mind"), "");
