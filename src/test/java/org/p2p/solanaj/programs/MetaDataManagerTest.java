@@ -1,6 +1,5 @@
 package org.p2p.solanaj.programs;
 import org.p2p.solanaj.core.PublicKey;
-import org.p2p.solanaj.programs.TokenMetaProgram;
 import org.p2p.solanaj.utils.ByteUtils;
 import org.p2p.solanaj.utils.JsonUtils;
 
@@ -8,11 +7,11 @@ import lombok.extern.slf4j.Slf4j;
 
 import org.p2p.solanaj.rpc.Cluster;
 import org.p2p.solanaj.rpc.RpcClient;
-import org.p2p.solanaj.rpc.types.MetaData;
+import org.p2p.solanaj.rpc.types.nft.MetaConst;
+import org.p2p.solanaj.rpc.types.nft.MetaData;
 import org.p2p.solanaj.rpc.types.MetaDataAccountInfo;
 import org.p2p.solanaj.rpc.types.ConfirmedTransaction.Meta;
-import org.p2p.solanaj.rpc.types.MetaData.RawCreator;
-import org.p2p.solanaj.rpc.types.MetaData.RawMetadata;
+import org.p2p.solanaj.token.MetaDataManager;
 
 import java.util.Base64;
 import java.util.List;
@@ -22,23 +21,22 @@ import com.google.common.io.ByteArrayDataInput;
 
 import org.bitcoinj.core.Base58;
 import org.junit.Test;
-import org.near.borshj.Borsh;
 import org.near.borshj.BorshBuffer;
 
 import static org.junit.Assert.*;
 
 @Slf4j
-public class TokenMetaProgramTest {
+public class MetaDataManagerTest {
     //public static final Logger LOGGER = Logger.getLogger(TokenMetaProgramTest.class.getName());
     private final RpcClient client = new RpcClient(Cluster.DEVNET);
     @Test
     // @SuppressWarnings({ "unchecked", "rawtypes" })
     public void testGetMetaDataAddress() throws Exception {        
-        PublicKey mint = new PublicKey("DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc");
+        String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
         try {
-            PublicKey metaDataAddress = TokenMetaProgram.getMetaDataAddress(mint);
+            String metaDataAddress = MetaDataManager.getMetaDataAddress(mintAddress);
             log.info("NFT Meta Data Address :{}",metaDataAddress.toString());
-            MetaDataAccountInfo metaDataAccountInfo = (MetaDataAccountInfo)client.getApi().getAccountInfo2(metaDataAddress);
+            MetaDataAccountInfo metaDataAccountInfo = (MetaDataAccountInfo)client.getApi().getAccountInfo2(new PublicKey(metaDataAddress));
             log.info(JsonUtils.toJsonPrettyString(metaDataAccountInfo));
             log.info("Meta Data :  {}",metaDataAccountInfo.getValue().getData().get(0));
             log.info("Meta Data Encoding Method :  {}",metaDataAccountInfo.getValue().getData().get(1));
@@ -51,12 +49,10 @@ public class TokenMetaProgramTest {
 
         // String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
         String mintAddress = "Bf3RLESNeULBD6XsZBJVHkbJPkp7AkrAKZeJdXipN8yc";
-        
-        PublicKey mintPubkey = new PublicKey(mintAddress);
 
-        PublicKey metaDataAddress = TokenMetaProgram.getMetaDataAddress(mintPubkey);
+        String metaDataAddress = MetaDataManager.getMetaDataAddress(mintAddress);
         log.info("NFT Meta Data Address :{}",metaDataAddress.toString());
-        MetaDataAccountInfo metaDataAccountInfo = (MetaDataAccountInfo)client.getApi().getAccountInfo2(metaDataAddress);
+        MetaDataAccountInfo metaDataAccountInfo = (MetaDataAccountInfo)client.getApi().getAccountInfo2(new PublicKey(metaDataAddress));
         log.info(JsonUtils.toJsonPrettyString(metaDataAccountInfo));
         log.info("Meta Data :  {}",metaDataAccountInfo.getValue().getData().get(0));
         log.info("Meta Data Encoding Method :  {}",metaDataAccountInfo.getValue().getData().get(1));
@@ -78,7 +74,7 @@ public class TokenMetaProgramTest {
 
         // key
         {
-            MetaData.Key key =  MetaData.Key.values()[buffer.readU8()];
+            MetaConst.Key key =  MetaConst.Key.values()[buffer.readU8()];
             log.info("Key : {}", key.name());
         }
 
@@ -153,7 +149,7 @@ public class TokenMetaProgramTest {
         //======================= Token Standard ==================
         // tokenStandard는 optional로 존재 유무 확인
         if(buffer.readBoolean()) {
-            MetaData.TokenStandard tokenStandard = MetaData.TokenStandard.values()[buffer.readU8()];
+            MetaConst.TokenStandard tokenStandard = MetaConst.TokenStandard.values()[buffer.readU8()];
             log.info("TokenStandard : {}", tokenStandard.name());
         }
         else  {
@@ -173,7 +169,7 @@ public class TokenMetaProgramTest {
         //======================= Uses ==================
         // Uses는 optional로 존재 유무 확인
         if(buffer.readBoolean()) {
-            MetaData.UseMethod useMethod = MetaData.UseMethod.values()[buffer.readU8()];
+            MetaConst.UseMethod useMethod = MetaConst.UseMethod.values()[buffer.readU8()];
             long remaining = buffer.readU64();
             long total =  buffer.readU64();
             log.info("useMethod : {}", useMethod.name());
@@ -184,4 +180,24 @@ public class TokenMetaProgramTest {
             log.info("UseMethod : {}", "None");
         }
     }
+    @Test
+    public void testGetMetaDataFromBinary2() throws Exception {
+
+        // String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
+        String mintAddress = "Bf3RLESNeULBD6XsZBJVHkbJPkp7AkrAKZeJdXipN8yc";
+        
+        String metaDataAddress = MetaDataManager.getMetaDataAddress(mintAddress);
+        log.info("NFT Meta Data Address :{}",metaDataAddress.toString());
+        MetaDataAccountInfo metaDataAccountInfo = (MetaDataAccountInfo)client.getApi().getAccountInfo2(new PublicKey(metaDataAddress));
+        log.info(JsonUtils.toJsonPrettyString(metaDataAccountInfo));
+        log.info("Meta Data :  {}",metaDataAccountInfo.getValue().getData().get(0));
+        log.info("Meta Data Encoding Method :  {}",metaDataAccountInfo.getValue().getData().get(1));
+
+        String data = metaDataAccountInfo.getValue().getData().get(0);
+        String decodeMeString = metaDataAccountInfo.getValue().getData().get(1);
+
+        MetaDataManager metaDataManager = new MetaDataManager(client);
+        MetaData metaData = metaDataManager.getMetaData(mintAddress);        
+        log.info(JsonUtils.toJsonPrettyString(metaData));
+    }    
 }

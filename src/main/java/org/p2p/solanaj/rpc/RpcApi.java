@@ -23,6 +23,7 @@ import org.p2p.solanaj.rpc.types.config.RpcEpochConfig;
 import org.p2p.solanaj.rpc.types.RpcResultTypes.ValueLong;
 import org.p2p.solanaj.rpc.types.config.RpcSendTransactionConfig;
 import org.p2p.solanaj.rpc.types.config.RpcSendTransactionConfig.Encoding;
+import org.p2p.solanaj.token.MetaDataManager;
 import org.p2p.solanaj.rpc.types.config.SignatureStatusConfig;
 import org.p2p.solanaj.rpc.types.config.SimulateTransactionConfig;
 import org.p2p.solanaj.rpc.types.TokenResultObjects.*;
@@ -34,7 +35,6 @@ import org.p2p.solanaj.ws.listeners.NotificationEventListener;
 import org.p2p.solanaj.utils.JsonUtils;
 import org.p2p.solanaj.programs.SystemProgram;
 import org.p2p.solanaj.programs.TokenProgram;
-import org.p2p.solanaj.programs.TokenMetaProgram;
 
 public class RpcApi {
     private RpcClient client;
@@ -291,7 +291,7 @@ public class RpcApi {
                 throw new RuntimeException("Not supported account type");
             }
         }
-        else if(progID.equals(TokenMetaProgram.PROGRAM_ID.toString())) {
+        else if(progID.equals(MetaDataManager.PROGRAM_ID.toString())) {
             return JsonUtils.castJson(accountObj,MetaDataAccountInfo.class);
         }
         else {
