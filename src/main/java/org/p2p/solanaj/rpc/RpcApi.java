@@ -34,6 +34,7 @@ import org.p2p.solanaj.ws.listeners.NotificationEventListener;
 import org.p2p.solanaj.utils.JsonUtils;
 import org.p2p.solanaj.programs.SystemProgram;
 import org.p2p.solanaj.programs.TokenProgram;
+import org.p2p.solanaj.programs.TokenMetaProgram;
 
 public class RpcApi {
     private RpcClient client;
@@ -276,7 +277,7 @@ public class RpcApi {
         // SystemProgram인 경우 Native Account
         if(progID.equals(SystemProgram.PROGRAM_ID.toString())) {                
             return JsonUtils.castJson(accountObj,AccountInfo.class);
-        }            
+        }        
         else if(progID.equals(TokenProgram.PROGRAM_ID.toString())) {
             String type = (String)JsonUtils.getObjectFromMap(
                     "value.data.parsed.type", accountObj);
@@ -290,7 +291,12 @@ public class RpcApi {
                 throw new RuntimeException("Not supported account type");
             }
         }
-        return null; 
+        else if(progID.equals(TokenMetaProgram.PROGRAM_ID.toString())) {
+            return JsonUtils.castJson(accountObj,MetaDataAccountInfo.class);
+        }
+        else {
+            return JsonUtils.castJson(accountObj,UnkownAccountInfo.class);
+        }
     }    
     public SplAccountInfo getSplAccountInfo(PublicKey account) throws RpcException {
         List<Object> params = new ArrayList<>();

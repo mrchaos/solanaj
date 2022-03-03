@@ -188,7 +188,6 @@ public class TokenProgram extends Program {
     }
     /**
      * get associated token address
-     * 2022.02.16 MrChaos
      * @param owner wallet address
      * @param tokenMint token mint address
      * @return associated token address
@@ -205,7 +204,6 @@ public class TokenProgram extends Program {
     }
     /**
      * Create associated token account
-     * 2022.02.16 MrChaos
      * @param payer feepayer
      * @param ownertokenAccount associated token account address of owner
      * @param owner owner wallet address
@@ -232,7 +230,6 @@ public class TokenProgram extends Program {
 
         ByteBuffer buffer = ByteBuffer.allocate(1);
         buffer.order(ByteOrder.LITTLE_ENDIAN);
-        //buffer.put((byte) INITIALIZE_METHOD_ID);
         buffer.put((byte) 0);
 
         return createTransactionInstruction(
