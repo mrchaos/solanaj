@@ -8,6 +8,8 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 public class Collection {
+        // 1 byte
         private boolean verified;
+        // 4 byte + n byte
         private String pubkey;
 }

@@ -3,11 +3,14 @@ package org.p2p.solanaj.core;
 import org.junit.Test;
 import org.p2p.solanaj.core.PublicKey.ProgramDerivedAddress;
 
+import lombok.extern.slf4j.Slf4j;
+
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
-
+@Slf4j
 public class PublicKeyTest {
 
     @Test(expected = IllegalArgumentException.class)
@@ -106,5 +109,26 @@ public class PublicKeyTest {
         assertTrue(programAddress2.getAddress().equals(new PublicKey("GXLbx3CbJuTTtJDZeS1PGzwJJ5jGYVEqcXum7472kpUp")));
         assertEquals(programAddress2.getNonce(), 254);
     }
-
+    @Test
+    public void testGetPubKeyFromBytes()  {
+        int pubKeyByteArray[] = {215,71,156,211,162,108,7,171,117,249,161,146,230,26,238,111,212,155,175,126,192,203,236,159,249,4,67,95,66,234,168,44};
+        byte b[] = new byte[pubKeyByteArray.length];
+        for(int i=0;i<pubKeyByteArray.length;i++) {
+                b[i] = (byte)pubKeyByteArray[i];
+        }
+        String pubKey = new PublicKey(b).toString();
+        log.info(pubKey);
+        // assertEquals(pubKey, "FVMzPumqe5JWjqyTBjEA34uBvdSYvhHJgQ2BeYWcXjP9");
+    }
+    @Test
+    public void testGetBytesFromPubKey()  {
+        String pubKey = "FVMzPumqe5JWjqyTBjEA34uBvdSYvhHJgQ2BeYWcXjP9";
+        byte[] b = new PublicKey(pubKey).toByteArray();
+        String[] s = new String[b.length];
+        for(int i=0;i<b.length;i++) {
+                s[i]="" + (b[i] > 0 ? b[i] : 256 + b[i]);
+        }
+        log.info("{}",String.join(",",s));
+        // assertEquals(pubKey, "FVMzPumqe5JWjqyTBjEA34uBvdSYvhHJgQ2BeYWcXjP9");
+    }    
 }

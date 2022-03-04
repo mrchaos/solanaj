@@ -7,7 +7,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
-public class  Uses { // 17 bytes + Option byte
+public class  Uses { // 17 bytes
     private MetaConst.UseMethod useMethod; //1
     private long remaining; //8
     private long total; //8
