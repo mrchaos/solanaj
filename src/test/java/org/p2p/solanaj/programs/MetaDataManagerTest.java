@@ -1,6 +1,5 @@
 package org.p2p.solanaj.programs;
 import org.p2p.solanaj.core.PublicKey;
-import org.p2p.solanaj.utils.ByteUtils;
 import org.p2p.solanaj.utils.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -9,15 +8,14 @@ import org.p2p.solanaj.rpc.Cluster;
 import org.p2p.solanaj.rpc.RpcClient;
 import org.p2p.solanaj.rpc.types.nft.MetaConst;
 import org.p2p.solanaj.rpc.types.nft.MetaData;
+import org.p2p.solanaj.rpc.types.nft.MasterEditionV1;
+import org.p2p.solanaj.rpc.types.nft.MasterEditionV2;
+import org.p2p.solanaj.rpc.types.nft.Edition;
 import org.p2p.solanaj.rpc.types.MetaDataAccountInfo;
-import org.p2p.solanaj.rpc.types.ConfirmedTransaction.Meta;
 import org.p2p.solanaj.token.MetaDataManager;
 
 import java.util.Base64;
-import java.util.List;
-import java.util.logging.Logger;
-
-import com.google.common.io.ByteArrayDataInput;
+import java.util.Objects;
 
 import org.bitcoinj.core.Base58;
 import org.junit.Test;
@@ -45,10 +43,36 @@ public class MetaDataManagerTest {
         }
     }
     @Test
+    public void testGetMasterEditionAddress() throws Exception {        
+        String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
+        try {
+            MetaDataManager metaDataManager = new MetaDataManager(client);
+            MetaData metaData = metaDataManager.getMetaData(mintAddress);  
+            
+            String masterEditionAddress = MetaDataManager.getMasterEditionAddress(metaData.getMint());
+            log.info("Master Edition Address : {}",masterEditionAddress);
+
+            Object obj = client.getApi().getAccountInfo2(new PublicKey(masterEditionAddress));
+            if (obj instanceof MetaDataAccountInfo) {
+                MetaDataAccountInfo metaDataAccountInfo = (MetaDataAccountInfo)client.getApi().getAccountInfo2(new PublicKey(masterEditionAddress));
+                log.info(JsonUtils.toJsonPrettyString(metaDataAccountInfo));
+                log.info("Meta Data :  {}",metaDataAccountInfo.getValue().getData().get(0));
+                log.info("Meta Data Encoding Method :  {}",metaDataAccountInfo.getValue().getData().get(1));
+            }
+            else {
+                log.info("account {} is not Metadata account info!",masterEditionAddress);
+            }
+        } catch(Exception e) {
+            assertTrue(false);
+        }
+    }
+    @Test
     public void testGetMetaDataFromBinary() throws Exception {
 
         // String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
-        String mintAddress = "Bf3RLESNeULBD6XsZBJVHkbJPkp7AkrAKZeJdXipN8yc";
+        // String mintAddress = "Bf3RLESNeULBD6XsZBJVHkbJPkp7AkrAKZeJdXipN8yc";
+        String mintAddress = "GffBfiJ6EJuPYBZA9H5fE85MwVidKzjES3dmETj77YUK";
+        
 
         String metaDataAddress = MetaDataManager.getMetaDataAddress(mintAddress);
         log.info("NFT Meta Data Address :{}",metaDataAddress.toString());
@@ -184,7 +208,9 @@ public class MetaDataManagerTest {
     public void testGetMetaDataFromBinary2() throws Exception {
 
         // String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
-        String mintAddress = "Bf3RLESNeULBD6XsZBJVHkbJPkp7AkrAKZeJdXipN8yc";
+        // String mintAddress = "Bf3RLESNeULBD6XsZBJVHkbJPkp7AkrAKZeJdXipN8yc";
+        String mintAddress = "GffBfiJ6EJuPYBZA9H5fE85MwVidKzjES3dmETj77YUK";
+        
         
         String metaDataAddress = MetaDataManager.getMetaDataAddress(mintAddress);
         log.info("NFT Meta Data Address :{}",metaDataAddress.toString());
@@ -199,5 +225,37 @@ public class MetaDataManagerTest {
         MetaDataManager metaDataManager = new MetaDataManager(client);
         MetaData metaData = metaDataManager.getMetaData(mintAddress);        
         log.info(JsonUtils.toJsonPrettyString(metaData));
-    }    
+    }
+    @Test
+    public void testGetEditionData() {
+        String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
+        try {
+            MetaDataManager metaDataManager = new MetaDataManager(client);
+            MetaData metaData = metaDataManager.getMetaData(mintAddress);  
+            Object obj = metaDataManager.getEditionData(metaData.getMint());
+            if(Objects.isNull(obj)) {
+                log.error("Edition data object is null");
+                assertTrue(false);
+            }
+            if(obj instanceof MasterEditionV1) {
+                MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
+                log.info("Master Edition V1");
+            }
+            else if(obj instanceof MasterEditionV2) {
+                MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
+                log.info("Master Edition V2");
+            }
+            else if(obj instanceof Edition) {
+                Edition edition = (Edition)obj;
+                log.info("Edition");
+            }
+            else {
+                log.error("Unkown!");
+                assertTrue(false);
+            }
+            log.info(JsonUtils.toJsonPrettyString(obj));
+        } catch(Exception e) {
+            assertTrue(false);
+        }
+    }
 }

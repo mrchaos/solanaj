@@ -11,5 +11,5 @@ public class MasterEditionV2 {
     private MetaConst.Key key;    
     private long supply;
     // Optional
-    private Long max_supply;
+    private Long maxSupply;
 }

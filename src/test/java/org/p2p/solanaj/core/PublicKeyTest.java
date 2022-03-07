@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.ByteBuffer;
 import java.util.Arrays;
 @Slf4j
 public class PublicKeyTest {

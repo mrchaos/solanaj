@@ -6,6 +6,7 @@ import org.p2p.solanaj.core.PublicKey;
 import org.p2p.solanaj.core.PublicKey.ProgramDerivedAddress;
 import org.p2p.solanaj.rpc.types.nft.MetaData;
 import org.p2p.solanaj.rpc.types.nft.Uses;
+import org.p2p.solanaj.rpc.types.nft.MetaConst.Key;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -14,6 +15,9 @@ import org.p2p.solanaj.rpc.types.MetaDataAccountInfo;
 import org.p2p.solanaj.rpc.types.nft.Collection;
 import org.p2p.solanaj.rpc.types.nft.Creator;
 import org.p2p.solanaj.rpc.types.nft.Data;
+import org.p2p.solanaj.rpc.types.nft.Edition;
+import org.p2p.solanaj.rpc.types.nft.MasterEditionV1;
+import org.p2p.solanaj.rpc.types.nft.MasterEditionV2;
 import org.p2p.solanaj.rpc.types.nft.MetaConst;
 
 import java.util.Arrays;
@@ -41,10 +45,31 @@ public class MetaDataManager {
             ), PROGRAM_ID);
         return programAddress.getAddress().toString();
     }
+
+    public static String getMasterEditionAddress(String mintAddress) throws Exception {
+        ProgramDerivedAddress programAddress = PublicKey.findProgramAddress(
+            Arrays.asList(
+                MetaConst.PREFIX.getBytes(),
+                PROGRAM_ID.toByteArray(),                 
+                new PublicKey(mintAddress).toByteArray(),
+                MetaConst.EDITION.getBytes()
+            ), PROGRAM_ID);
+        return programAddress.getAddress().toString();
+    }
+
     public MetaData getMetaData(String mintAddress) throws Exception {
 
         String metaDataAddress = getMetaDataAddress(mintAddress);
-        MetaDataAccountInfo metaDataAccountInfo = (MetaDataAccountInfo)client.getApi().getAccountInfo2(new PublicKey(metaDataAddress));
+        Object obj = client.getApi().getAccountInfo2(new PublicKey(metaDataAddress));
+        MetaDataAccountInfo metaDataAccountInfo = null;
+        if (obj instanceof MetaDataAccountInfo) {
+            metaDataAccountInfo = (MetaDataAccountInfo)obj;
+        }
+        else {
+            log.error("Metadta address({}) of mint({}) is not Metadata account type",
+            metaDataAddress, mintAddress);
+            return null;        
+        }        
         String binData = metaDataAccountInfo.getValue().getData().get(0);
         String decodeMeString = metaDataAccountInfo.getValue().getData().get(1);
 
@@ -117,5 +142,64 @@ public class MetaDataManager {
             uses = new Uses(useMethod, remaining, total);    
         }
         return new MetaData(key, update_authority, mint, data, primary_sale_happened, 
-                            is_mutable, edition_nonce, tokenStandard, collection, uses);    }    
+                            is_mutable, edition_nonce, tokenStandard, collection, uses);    
+    }
+    
+    public Object getEditionData(String mintAddress) throws Exception {
+
+        String masterEditionAddress = getMasterEditionAddress(mintAddress);
+        Object obj = client.getApi().getAccountInfo2(new PublicKey(masterEditionAddress));
+        MetaDataAccountInfo metaDataAccountInfo = null;
+        if (obj instanceof MetaDataAccountInfo) {
+            metaDataAccountInfo = (MetaDataAccountInfo)obj;
+        }
+        else {
+            log.error("Master edition address({}) of mint({}) is not Metadata account type",
+                masterEditionAddress, mintAddress);
+            return null;        
+        }
+        String binData = metaDataAccountInfo.getValue().getData().get(0);
+        String decodeMeString = metaDataAccountInfo.getValue().getData().get(1);
+
+        BorshBuffer buffer =null;
+        if(decodeMeString.equalsIgnoreCase("base58")) {
+            buffer = BorshBuffer.wrap(Base58.decode(binData));
+        } 
+        else if(decodeMeString.equalsIgnoreCase("base64")) {
+            buffer = BorshBuffer.wrap(Base64.getDecoder().decode(binData));
+        }
+        else {
+            log.error("Unkown data decode string : {}",decodeMeString);
+            return null;
+        }       
+        // key 1 byte
+        MetaConst.Key key =  MetaConst.Key.values()[buffer.readU8()];
+        
+        if (key == MetaConst.Key.MasterEditionV1) {
+            long supply = buffer.readU64();
+            Long maxSupply = null;
+            // Optional 이 존재하는 경우
+            if(buffer.readBoolean()) {
+                maxSupply = buffer.readU64();
+            }
+            String printingMint =  new PublicKey(buffer.readFixedArray(32)).toString();
+            String oneTimePrintingAuthorizationMint =  new PublicKey(buffer.readFixedArray(32)).toString();
+            return new MasterEditionV1(key, supply, maxSupply, printingMint, oneTimePrintingAuthorizationMint);        
+        }
+        else if(key == MetaConst.Key.MasterEditionV2) {
+            long supply = buffer.readU64();
+            Long maxSupply = null;
+            // Optional 이 존재하는 경우
+            if(buffer.readBoolean()) {
+                maxSupply = buffer.readU64();
+            }
+            return new MasterEditionV2(key, supply, maxSupply);
+        }
+        else {
+            String parent =  new PublicKey(buffer.readFixedArray(32)).toString();
+            long edition =  buffer.readU64();
+            return new Edition(key, parent, edition);
+        }
+    }
 }
+
