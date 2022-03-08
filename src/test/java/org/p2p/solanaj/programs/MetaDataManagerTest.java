@@ -12,6 +12,8 @@ import org.p2p.solanaj.rpc.types.nft.MasterEditionV1;
 import org.p2p.solanaj.rpc.types.nft.MasterEditionV2;
 import org.p2p.solanaj.rpc.types.nft.Edition;
 import org.p2p.solanaj.rpc.types.MetaDataAccountInfo;
+import org.p2p.solanaj.rpc.types.SplMintInfo;
+import org.p2p.solanaj.rpc.types.TokenAccountInfo;
 import org.p2p.solanaj.token.MetaDataManager;
 
 import java.util.Base64;
@@ -351,9 +353,23 @@ public class MetaDataManagerTest {
         }
     } 
     @Test 
+    /**
+     * NFT mint 주소로 부터 metadata, edition data, master edition data까지 가져온다.
+     * @throws Exception
+     */
     public void testGetMetaDataEditionData() throws Exception {
         // 이 민트 주소는 Metadata, Master Edition / Edition Data를 포함하고 있다.
         String mintAddress = "2WUYymgjP6z31pggGK2Sh9LNdDWQ5BXH4HQbwNvFjofq";
+        // Mint account data
+        Object mintObj = client.getApi().getAccountInfo2(new PublicKey(mintAddress));
+        if(!(mintObj instanceof SplMintInfo)) {
+            log.error("mint({}) account is not SplMintInfo type, returned type is {}",mintAddress,mintObj.getClass().toString());
+            assertTrue(false);
+        }
+        log.info("Mint account({}) info :\n{}",
+            mintAddress,JsonUtils.toJsonPrettyString(mintObj));
+        
+        // Meta data
         MetaDataManager metaDataManager = new MetaDataManager(client);
         MetaData metaData = metaDataManager.getMetaData(mintAddress);
         if (Objects.isNull(metaData)) {
