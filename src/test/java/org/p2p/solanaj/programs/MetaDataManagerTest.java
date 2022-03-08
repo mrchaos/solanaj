@@ -313,7 +313,7 @@ public class MetaDataManagerTest {
     }
     @Test
     public void testGetEditionDataFromEditionAddress() {
-        String additionAddress = "Ag1PPgxGAoTDx9kL9tiZ4f3c3kx8rDRr3Ufa1cDhzxNt";
+        String additionAddress = "4BVSUHExMFtLde5T1rB5EmNFELsY3gadE69fTjBV4wZo";
         MetaDataManager metaDataManager = new MetaDataManager(client);        
         try {
             Object obj = metaDataManager.getEditionDataFromEditionAddress(additionAddress);
@@ -332,6 +332,13 @@ public class MetaDataManagerTest {
             else if(obj instanceof Edition) {
                 Edition edition = (Edition)obj;
                 log.info("Edition (Limited edition)");
+                if(!Objects.isNull(edition.getParent())) {
+                    log.info("Parent({}) data of this edition({})",
+                        edition.getParent(),
+                        additionAddress
+                        );
+                    _getEditionData(edition.getParent());
+                }                
             }
             else {
                 log.error("Unkown!");
@@ -342,5 +349,57 @@ public class MetaDataManagerTest {
             log.error(e.toString());
             assertTrue(false);
         }
-    }    
+    } 
+    @Test 
+    public void testGetMetaDataEditionData() throws Exception {
+        // 이 민트 주소는 Metadata, Master Edition / Edition Data를 포함하고 있다.
+        String mintAddress = "2WUYymgjP6z31pggGK2Sh9LNdDWQ5BXH4HQbwNvFjofq";
+        MetaDataManager metaDataManager = new MetaDataManager(client);
+        MetaData metaData = metaDataManager.getMetaData(mintAddress);
+        if (Objects.isNull(metaData)) {
+            log.error("Metadata of mint({}) is null",mintAddress);
+            assertTrue(false);
+        }
+        log.info("Mint address : {}",mintAddress);
+        log.info("Meta data : \n{}",JsonUtils.toJsonPrettyString(metaData));
+        // Edition data
+        Object editionObj = metaDataManager.getEditionData(mintAddress);
+        if(Objects.isNull(editionObj)) {
+            log.error("Edition data of mint({}) is null",mintAddress);
+            assertTrue(false);
+        }        
+        if(editionObj instanceof MasterEditionV2) {
+            log.info("Master Edition V2 Data (Master)");
+            MasterEditionV2 masterEditionV2 = (MasterEditionV2)editionObj;
+            log.info("{}", JsonUtils.toJsonPrettyString(masterEditionV2));
+        }
+        else if (editionObj instanceof MasterEditionV1) {
+            log.info("Master Edition V1 Data (Deprecated)");
+            MasterEditionV1 masterEditionV1 = (MasterEditionV1)editionObj;
+            log.info("{}", JsonUtils.toJsonPrettyString(masterEditionV1));
+        }
+        else {
+            log.info("Edition (Limited)");
+            Edition edition = (Edition)editionObj;
+            log.info("{}",JsonUtils.toJsonPrettyString(edition));
+            if(Objects.isNull(edition.getParent())) {
+                log.error("Parent edition address is null!");
+                assertTrue(false);
+            }
+            // parent edition data
+            Object parentEditionObj = metaDataManager.getEditionDataFromEditionAddress(edition.getParent());
+            if(Objects.isNull(parentEditionObj)) {
+                log.error("Parent edition({}) data is null!",edition.getParent());
+                assertTrue(false);
+            }
+            if(!(parentEditionObj instanceof MasterEditionV2)) {
+                log.error("Parent edition({}) data is not MasterEditionV2 type!",edition.getParent());
+                assertTrue(false);
+            }
+            log.info("Parent edition({}) data : \n{}",
+                edition.getParent(),
+                JsonUtils.toJsonPrettyString(parentEditionObj));
+        }
+
+    }
 }
