@@ -274,6 +274,10 @@ public class RpcApi {
         final Object accountObj = rpcResult.getResult();
 
         final String progID = (String) JsonUtils.getObjectFromMap("value.owner", accountObj);
+        if (Objects.isNull(progID)) {
+            return JsonUtils.castJson(accountObj,UnkownAccountInfo.class);
+        }
+
         // SystemProgram인 경우 Native Account
         if(progID.equals(SystemProgram.PROGRAM_ID.toString())) {                
             return JsonUtils.castJson(accountObj,AccountInfo.class);
@@ -288,7 +292,8 @@ public class RpcApi {
                 return JsonUtils.castJson(accountObj,SplMintInfo.class);
             }
             else {
-                throw new RuntimeException("Not supported account type");
+                // throw new RuntimeException("Not supported account type");
+                return JsonUtils.castJson(accountObj,UnkownAccountInfo.class);
             }
         }
         else if(progID.equals(MetaDataManager.PROGRAM_ID.toString())) {

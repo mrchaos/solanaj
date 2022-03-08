@@ -226,12 +226,57 @@ public class MetaDataManagerTest {
         MetaData metaData = metaDataManager.getMetaData(mintAddress);        
         log.info(JsonUtils.toJsonPrettyString(metaData));
     }
+    void _getEditionData(String editionAddress) {
+
+       try {
+           MetaDataManager metaDataManager = new MetaDataManager(client);
+           log.info("Edition Address : {}",editionAddress);            
+           
+           Object obj = metaDataManager.getEditionDataFromEditionAddress(editionAddress);
+           if(Objects.isNull(obj)) {
+               log.error("Edition data object is null");
+               assertTrue(false);
+           }
+           if(obj instanceof MasterEditionV1) {
+               MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
+               log.info("Master Edition V1 (Deprecated Master edition)");
+           }
+           else if(obj instanceof MasterEditionV2) {
+               MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
+               log.info("Master Edition V2 (Master edition)");
+           }
+           else if(obj instanceof Edition) {
+               Edition edition = (Edition)obj;
+               log.info("Edition (Limited edition)");
+           }
+           else {
+               log.error("Unkown!");
+               assertTrue(false);
+           }
+           log.info(JsonUtils.toJsonPrettyString(obj));
+       } catch(Exception e) {
+           log.error(e.toString());
+           assertTrue(false);
+       }        
+    }
     @Test
     public void testGetEditionData() {
-        String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
+        // String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
+        String mintAddress = "2WUYymgjP6z31pggGK2Sh9LNdDWQ5BXH4HQbwNvFjofq";
+        // String mintAddress = "GfkFvEzdwk3w3rfn6u9KjGkjwwhUWGspW3z9txASwanj";
+        
+        
         try {
             MetaDataManager metaDataManager = new MetaDataManager(client);
             MetaData metaData = metaDataManager.getMetaData(mintAddress);  
+            if(Objects.isNull(metaData)) {
+                log.error("Meta data is null!");
+                assertTrue(false);
+            }
+            log.info("Metadata mint address : {}",metaData.getMint());      
+            String masterEditionAddress = MetaDataManager.getMasterEditionAddress(metaData.getMint());
+            log.info("Master Edition Address : {}",masterEditionAddress);            
+            
             Object obj = metaDataManager.getEditionData(metaData.getMint());
             if(Objects.isNull(obj)) {
                 log.error("Edition data object is null");
@@ -239,15 +284,22 @@ public class MetaDataManagerTest {
             }
             if(obj instanceof MasterEditionV1) {
                 MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
-                log.info("Master Edition V1");
+                log.info("Master Edition V1 (Deprecated Master edition)");
             }
             else if(obj instanceof MasterEditionV2) {
                 MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
-                log.info("Master Edition V2");
+                log.info("Master Edition V2 (Master edition)");
             }
             else if(obj instanceof Edition) {
                 Edition edition = (Edition)obj;
-                log.info("Edition");
+                log.info("Edition (Limited edition)");
+                if(!Objects.isNull(edition.getParent())) {
+                    log.info("Parent({}) data of this edition({})",
+                        edition.getParent(),
+                        masterEditionAddress
+                        );
+                    _getEditionData(edition.getParent());
+                }                
             }
             else {
                 log.error("Unkown!");
@@ -255,7 +307,40 @@ public class MetaDataManagerTest {
             }
             log.info(JsonUtils.toJsonPrettyString(obj));
         } catch(Exception e) {
+            log.error(e.toString());
             assertTrue(false);
         }
     }
+    @Test
+    public void testGetEditionDataFromEditionAddress() {
+        String additionAddress = "Ag1PPgxGAoTDx9kL9tiZ4f3c3kx8rDRr3Ufa1cDhzxNt";
+        MetaDataManager metaDataManager = new MetaDataManager(client);        
+        try {
+            Object obj = metaDataManager.getEditionDataFromEditionAddress(additionAddress);
+            if(Objects.isNull(obj)) {
+                log.error("Edition data object is null");
+                assertTrue(false);
+            }
+            if(obj instanceof MasterEditionV1) {
+                MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
+                log.info("Master Edition V1 (Deprecated Master edition)");
+            }
+            else if(obj instanceof MasterEditionV2) {
+                MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
+                log.info("Master Edition V2 (Master edition)");
+            }
+            else if(obj instanceof Edition) {
+                Edition edition = (Edition)obj;
+                log.info("Edition (Limited edition)");
+            }
+            else {
+                log.error("Unkown!");
+                assertTrue(false);
+            }
+            log.info(JsonUtils.toJsonPrettyString(obj));
+        } catch(Exception e) {
+            log.error(e.toString());
+            assertTrue(false);
+        }
+    }    
 }

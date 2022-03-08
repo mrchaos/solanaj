@@ -7,11 +7,13 @@ import org.p2p.solanaj.core.PublicKey.ProgramDerivedAddress;
 import org.p2p.solanaj.rpc.types.nft.MetaData;
 import org.p2p.solanaj.rpc.types.nft.Uses;
 import org.p2p.solanaj.rpc.types.nft.MetaConst.Key;
+import org.p2p.solanaj.utils.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.p2p.solanaj.rpc.RpcClient;
 import org.p2p.solanaj.rpc.types.MetaDataAccountInfo;
+import org.p2p.solanaj.rpc.types.UnkownAccountInfo;
 import org.p2p.solanaj.rpc.types.nft.Collection;
 import org.p2p.solanaj.rpc.types.nft.Creator;
 import org.p2p.solanaj.rpc.types.nft.Data;
@@ -23,6 +25,7 @@ import org.p2p.solanaj.rpc.types.nft.MetaConst;
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Base64;
 
 @Slf4j
@@ -61,13 +64,21 @@ public class MetaDataManager {
 
         String metaDataAddress = getMetaDataAddress(mintAddress);
         Object obj = client.getApi().getAccountInfo2(new PublicKey(metaDataAddress));
+
+        // if(obj instanceof UnkownAccountInfo) {
+        //     log.error("Metadata account of mint address({}) is invalid!\n{}",
+        //         mintAddress,
+        //         JsonUtils.toJsonPrettyString(obj));
+        //     return null;
+        // }
+
         MetaDataAccountInfo metaDataAccountInfo = null;
         if (obj instanceof MetaDataAccountInfo) {
             metaDataAccountInfo = (MetaDataAccountInfo)obj;
         }
         else {
-            log.error("Metadta address({}) of mint({}) is not Metadata account type",
-            metaDataAddress, mintAddress);
+            log.error("Metadta address({}) of mint({}) is not Metadata account type\n{}",
+            metaDataAddress, mintAddress,JsonUtils.toJsonPrettyString(obj));
             return null;        
         }        
         String binData = metaDataAccountInfo.getValue().getData().get(0);
@@ -145,17 +156,16 @@ public class MetaDataManager {
                             is_mutable, edition_nonce, tokenStandard, collection, uses);    
     }
     
-    public Object getEditionData(String mintAddress) throws Exception {
+    public Object getEditionDataFromEditionAddress(String editionAddress) throws Exception {
 
-        String masterEditionAddress = getMasterEditionAddress(mintAddress);
-        Object obj = client.getApi().getAccountInfo2(new PublicKey(masterEditionAddress));
+        Object obj = client.getApi().getAccountInfo2(new PublicKey(editionAddress));
         MetaDataAccountInfo metaDataAccountInfo = null;
         if (obj instanceof MetaDataAccountInfo) {
             metaDataAccountInfo = (MetaDataAccountInfo)obj;
         }
         else {
-            log.error("Master edition address({}) of mint({}) is not Metadata account type",
-                masterEditionAddress, mintAddress);
+            log.error("Master edition address({}) is not Metadata account type",
+                editionAddress);
             return null;        
         }
         String binData = metaDataAccountInfo.getValue().getData().get(0);
@@ -199,6 +209,18 @@ public class MetaDataManager {
             String parent =  new PublicKey(buffer.readFixedArray(32)).toString();
             long edition =  buffer.readU64();
             return new Edition(key, parent, edition);
+        }
+    }    
+    public Object getEditionData(String mintAddress) throws Exception {
+
+        String masterEditionAddress = getMasterEditionAddress(mintAddress);
+        Object obj = getEditionDataFromEditionAddress(masterEditionAddress);
+        if (!Objects.isNull(obj)) {
+            return obj;
+        }
+        else {
+            log.error("Master edition data of mint({}) is null!");
+            return null;        
         }
     }
 }
