@@ -6,14 +6,12 @@ import org.p2p.solanaj.core.PublicKey;
 import org.p2p.solanaj.core.PublicKey.ProgramDerivedAddress;
 import org.p2p.solanaj.rpc.types.nft.MetaData;
 import org.p2p.solanaj.rpc.types.nft.Uses;
-import org.p2p.solanaj.rpc.types.nft.MetaConst.Key;
 import org.p2p.solanaj.utils.JsonUtils;
 
 import lombok.extern.slf4j.Slf4j;
 
 import org.p2p.solanaj.rpc.RpcClient;
 import org.p2p.solanaj.rpc.types.MetaDataAccountInfo;
-import org.p2p.solanaj.rpc.types.UnkownAccountInfo;
 import org.p2p.solanaj.rpc.types.nft.Collection;
 import org.p2p.solanaj.rpc.types.nft.Creator;
 import org.p2p.solanaj.rpc.types.nft.Data;

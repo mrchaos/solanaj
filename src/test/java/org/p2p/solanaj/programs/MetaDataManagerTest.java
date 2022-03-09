@@ -13,7 +13,6 @@ import org.p2p.solanaj.rpc.types.nft.MasterEditionV2;
 import org.p2p.solanaj.rpc.types.nft.Edition;
 import org.p2p.solanaj.rpc.types.MetaDataAccountInfo;
 import org.p2p.solanaj.rpc.types.SplMintInfo;
-import org.p2p.solanaj.rpc.types.TokenAccountInfo;
 import org.p2p.solanaj.token.MetaDataManager;
 
 import java.util.Base64;
@@ -221,8 +220,8 @@ public class MetaDataManagerTest {
         log.info("Meta Data :  {}",metaDataAccountInfo.getValue().getData().get(0));
         log.info("Meta Data Encoding Method :  {}",metaDataAccountInfo.getValue().getData().get(1));
 
-        String data = metaDataAccountInfo.getValue().getData().get(0);
-        String decodeMeString = metaDataAccountInfo.getValue().getData().get(1);
+        // String data = metaDataAccountInfo.getValue().getData().get(0);
+        // String decodeMeString = metaDataAccountInfo.getValue().getData().get(1);
 
         MetaDataManager metaDataManager = new MetaDataManager(client);
         MetaData metaData = metaDataManager.getMetaData(mintAddress);        
@@ -240,15 +239,15 @@ public class MetaDataManagerTest {
                assertTrue(false);
            }
            if(obj instanceof MasterEditionV1) {
-               MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
+            //    MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
                log.info("Master Edition V1 (Deprecated Master edition)");
            }
            else if(obj instanceof MasterEditionV2) {
-               MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
+            //    MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
                log.info("Master Edition V2 (Master edition)");
            }
            else if(obj instanceof Edition) {
-               Edition edition = (Edition)obj;
+            //    Edition edition = (Edition)obj;
                log.info("Edition (Limited edition)");
            }
            else {
@@ -285,11 +284,11 @@ public class MetaDataManagerTest {
                 assertTrue(false);
             }
             if(obj instanceof MasterEditionV1) {
-                MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
+                // MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
                 log.info("Master Edition V1 (Deprecated Master edition)");
             }
             else if(obj instanceof MasterEditionV2) {
-                MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
+                // MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
                 log.info("Master Edition V2 (Master edition)");
             }
             else if(obj instanceof Edition) {
@@ -324,11 +323,11 @@ public class MetaDataManagerTest {
                 assertTrue(false);
             }
             if(obj instanceof MasterEditionV1) {
-                MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
+                // MasterEditionV1 masterEditionV1 = (MasterEditionV1)obj;
                 log.info("Master Edition V1 (Deprecated Master edition)");
             }
             else if(obj instanceof MasterEditionV2) {
-                MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
+                // MasterEditionV2 masterEditionV2 = (MasterEditionV2)obj;
                 log.info("Master Edition V2 (Master edition)");
             }
             else if(obj instanceof Edition) {
