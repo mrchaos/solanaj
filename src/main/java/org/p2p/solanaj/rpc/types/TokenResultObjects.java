@@ -49,6 +49,12 @@ public class TokenResultObjects {
             this.address = (String) am.get("address");
         }
     }
+    @Getter
+    @ToString
+    @NoArgsConstructor
+    public static class RentExemptReserve {
+
+    }
 
     @Getter
     @ToString
@@ -62,6 +68,9 @@ public class TokenResultObjects {
 
         @Json(name = "owner")
         private String owner;
+
+        @Json(name = "rentExemptReserve")
+        private TokenAmountInfo rentExemptReserve;
 
         @Json(name = "state")
         private String state;

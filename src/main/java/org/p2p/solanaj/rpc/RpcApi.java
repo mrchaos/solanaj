@@ -594,7 +594,22 @@ public class RpcApi {
 
         return tokenAccountKey;
     }
-
+    public TokenAccountInfo getTokenAccountsByOwnerWithProgramID(PublicKey owner, PublicKey address) throws RpcException {
+        try {
+            return client.getApi().getTokenAccountsByOwner(owner,Map.of("programId",address.toBase58()),new HashMap<>());
+            
+        } catch(Exception e) {
+            throw new RpcException(String.format("unable to get token account by owner : %s",e.toString()));
+        }
+    }
+    public TokenAccountInfo getTokenAccountsByOwnerWithMint(PublicKey owner, PublicKey address) throws RpcException {
+        try {
+            return client.getApi().getTokenAccountsByOwner(owner,Map.of("mint",address.toBase58()),new HashMap<>());
+            
+        } catch(Exception e) {
+            throw new RpcException(String.format("unable to get token account by owner : %s",e.toString()));
+        }
+    }    
     public InflationRate getInflationRate() throws RpcException {
         return client.call("getInflationRate", new ArrayList<>(), InflationRate.class);
     }
