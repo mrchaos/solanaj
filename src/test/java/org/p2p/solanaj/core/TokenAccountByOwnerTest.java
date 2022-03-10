@@ -12,7 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import static org.junit.Assert.assertTrue;
 
 @Slf4j
-public class TokenAccountByOwner2Test  {
+public class TokenAccountByOwnerTest  {
     private final RpcClient client = new RpcClient(Cluster.DEVNET);
     PublicKey owner = new PublicKey("GzZ47NaZbLTy3XxuLsyQfqkPXA4gq7osL5ixgEkTZ8JQ");
     PublicKey mint = new PublicKey("BdtBaw3u9bBiBLjF9unbPDhXTWaWqz6ngSDXo16yXcT9");
@@ -28,7 +28,7 @@ public class TokenAccountByOwner2Test  {
             log.info(JsonUtils.toJsonPrettyString(tokenAccountInfo.getValue()));
 
             log.info("======================program id========================");
-            tokenAccountInfo = client.getApi().getTokenAccountsByOwnerWithProgramID(owner,programId);
+            tokenAccountInfo = client.getApi().getTokenAccountsByOwnerWithProgramID(owner);
             log.info(JsonUtils.toJsonPrettyString(tokenAccountInfo.getValue()));
         }
         catch(Exception e) {
