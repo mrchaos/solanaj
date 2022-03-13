@@ -15,7 +15,7 @@ public class DataV2 {
     // URI pointing to JSON representing the asset
     private String uri;
     // Royalty basis points that goes to creators in secondary sales (0-10000)
-    private int seller_fee_basis_points;
+    private int sellerFeeBasisPoints;
     // Array of creators
     // Optional
     private Creator creator;

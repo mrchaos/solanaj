@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class Reservation {
     public String address;
-    public long spots_remaining;
-    public long total_spots;
+    public long spotsRemaining;
+    public long totalSpots;
 }

@@ -95,15 +95,15 @@ public class MetaDataManager {
         }       
         // key
         MetaConst.Key key =  MetaConst.Key.values()[buffer.readU8()];    
-        // update_authority
-        String update_authority = new PublicKey(buffer.readFixedArray(32)).toString();    
+        // updateAuthority
+        String updateAuthority = new PublicKey(buffer.readFixedArray(32)).toString();    
         // mint
         String mint = new PublicKey(buffer.readFixedArray(32)).toString();
         // data
         String name = buffer.readString().trim();
         String symbol = buffer.readString().trim();
         String uri = buffer.readString().trim();
-        int seller_fee_basis_points = (int)buffer.readU16();
+        int sellerFeeBasisPoints = (int)buffer.readU16();
         List<Creator> creators = null;
         // Creators optional check
         if(buffer.readBoolean()) {
@@ -118,17 +118,17 @@ public class MetaDataManager {
                 creators.add(creator);
             }
         }
-        Data data = new Data(name, symbol, uri, seller_fee_basis_points, creators);
-        // primary_sale_happened
-        boolean primary_sale_happened = buffer.readBoolean();           
-        // is_mutable
-        boolean is_mutable = buffer.readBoolean();    
-        // edition_nonce
+        Data data = new Data(name, symbol, uri, sellerFeeBasisPoints, creators);
+        // primarySaleHappened
+        boolean primarySaleHappened = buffer.readBoolean();           
+        // isMutable
+        boolean isMutable = buffer.readBoolean();    
+        // editionNonce
         // optional로 존재여부 확인
-        Integer edition_nonce = null;
+        Integer editionNonce = null;
         if(buffer.readBoolean()) {
-            edition_nonce = (int)buffer.readU8();
-            edition_nonce = edition_nonce < 0 ? 256 + edition_nonce : edition_nonce;
+            editionNonce = (int)buffer.readU8();
+            editionNonce = editionNonce < 0 ? 256 + editionNonce : editionNonce;
         } 
         MetaConst.TokenStandard tokenStandard = null;
         // tokenStandard는 optional로 존재 유무 확인
@@ -150,8 +150,8 @@ public class MetaDataManager {
             long total =  buffer.readU64();
             uses = new Uses(useMethod, remaining, total);    
         }
-        return new MetaData(key, update_authority, mint, data, primary_sale_happened, 
-                            is_mutable, edition_nonce, tokenStandard, collection, uses);    
+        return new MetaData(key, updateAuthority, mint, data, primarySaleHappened, 
+                            isMutable, editionNonce, tokenStandard, collection, uses);    
     }
     
     public Object getEditionDataFromEditionAddress(String editionAddress) throws Exception {

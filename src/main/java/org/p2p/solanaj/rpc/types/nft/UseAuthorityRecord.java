@@ -9,6 +9,6 @@ import lombok.Setter;
 @AllArgsConstructor
 public class UseAuthorityRecord {
     private MetaConst.Key key; //1
-    private long allowed_uses; //8
+    private long allowedUses; //8
     private byte bump;
 }

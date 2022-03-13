@@ -12,14 +12,14 @@ import lombok.Setter;
 public class ReservationListV2 {
     private MetaConst.Key key;
     // Present for reverse lookups
-    private String master_edition;
+    private String masterEdition;
 
     // What supply counter was on master_edition when this reservation was created.
     // Optional
-    private Long supply_snapshot;
+    private Long supplySnapshot;
     private List<Reservation> reservations;
     // How many reservations there are going to be, given on first set_reservation call
-    private long total_reservation_spots;
+    private long totalReservationSpots;
     // Cached count of reservation spots in the reservation vec to save on CPU.
-    private long current_reservation_spots;
+    private long currentReservationSpots;
 }

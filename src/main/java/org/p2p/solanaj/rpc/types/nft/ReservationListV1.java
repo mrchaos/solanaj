@@ -12,10 +12,10 @@ import lombok.Setter;
 public class ReservationListV1 {
     public MetaConst.Key key;
     // Present for reverse lookups
-    public String master_edition;
+    public String masterEdition;
 
     // What supply counter was on master_edition when this reservation was created.
     // Optional
-    public Long supply_snapshot;
+    public Long supplySnapshot;
     public List<ReservationV1> reservations;
 }
