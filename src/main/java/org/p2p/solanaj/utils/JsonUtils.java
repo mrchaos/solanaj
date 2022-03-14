@@ -70,9 +70,16 @@ public class JsonUtils {
         return adapter.fromJsonValue(obj);
     } 
 
-    static public String toJsonPrettyString(Object jsonObject) throws IOException {
-        return toJsonString(jsonObject,true);
+    /**
+     * Object를 pretty jsons tring으로 변환
+     * @param obj  object
+     * @return json string
+     * @throws IOException io exception
+     */
+    static public String toJsonPrettyString(Object obj) throws IOException {
+        return toJsonString(obj,true);
     }
+
     /**
      * Object를 jsonstring으로 변환
      * @param obj  object
