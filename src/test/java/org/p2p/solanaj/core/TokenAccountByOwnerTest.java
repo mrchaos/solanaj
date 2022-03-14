@@ -11,7 +11,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import static org.junit.Assert.assertTrue;
 
+import org.junit.Ignore;
+
 @Slf4j
+@Ignore
 public class TokenAccountByOwnerTest  {
     private final RpcClient client = new RpcClient(Cluster.DEVNET);
     PublicKey owner = new PublicKey("GzZ47NaZbLTy3XxuLsyQfqkPXA4gq7osL5ixgEkTZ8JQ");

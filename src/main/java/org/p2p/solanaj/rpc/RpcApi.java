@@ -252,7 +252,7 @@ public class RpcApi {
      * @return account인 경우: AccountInfo, 
      *         token : SplAccountInfo,
      *         mint  : SplMintInfo
-     * @throws Exception
+     * @throws Exception exception
      */
     public Object getAccountInfo2(PublicKey account) throws Exception {        
         List<Object> params = new ArrayList<>();
@@ -350,8 +350,8 @@ public class RpcApi {
     /**
      * Seemingly deprecated on the official Solana API.
      *
-     * @return
-     * @throws RpcException
+     * @return block height
+     * @throws RpcException rpc exception
      */
     public long getBlockHeight() throws RpcException {
         return getBlockHeight(null);
@@ -508,9 +508,12 @@ public class RpcApi {
 
     /**
      * Returns identity and transaction information about a confirmed block in the ledger
-     * DEPRECATED: use getBlock instead
+     * DEPRECATED: use getBlock instead     
+     * @param slot block number
+     * @return ConfirmedBlock
+     * @throws RpcException rpc exception
      */
-    @Deprecated
+     @Deprecated     
     public ConfirmedBlock getConfirmedBlock(int slot) throws RpcException {
         List<Object> params = new ArrayList<>();
 
@@ -522,6 +525,9 @@ public class RpcApi {
 
     /**
      * Returns identity and transaction information about a confirmed block in the ledger
+     * @param slot block number
+     * @return block information
+     * @throws RpcException rpc exception
      */
     public Block getBlock(int slot) throws RpcException {
         return getBlock(slot, null);
@@ -547,8 +553,8 @@ public class RpcApi {
 
     /**
      * Returns information about the current epoch
-     * @return
-     * @throws RpcException
+     * @return Epoch infomation
+     * @throws RpcException rpc exception
      */
     public EpochInfo getEpochInfo() throws RpcException {
         return getEpochInfo(null);
@@ -598,7 +604,8 @@ public class RpcApi {
     /**
      *  owner가 소유한 모든 토큰(NFT포함) account를 리턴
      * @param owner owner 지갑 주소     
-     * @return
+     * @return TokenAccountInfo
+     * @throws RpcException rpc exception      
      */
     public TokenAccountInfo getTokenAccountsByOwnerWithProgramID(PublicKey owner) throws RpcException {
         try {            
@@ -758,6 +765,10 @@ public class RpcApi {
     /**
      * Returns a list of confirmed blocks between two slots
      * DEPRECATED: use getBlocks instead
+     * @param start start slot, as u64 integer
+     * @param end (optional) end slot, as u64 integer
+     * @return  list confirmed blocks between start slot and either end slot
+     * @throws RpcException rpc exception
      */
     @SuppressWarnings({ "unchecked"})
     @Deprecated
@@ -769,6 +780,9 @@ public class RpcApi {
     /**
      * Returns a list of confirmed blocks between two slots
      * DEPRECATED: use getBlocks instead
+     * @param start start solot
+     * @return comfirmed block numbers form start slot rto current
+     * @throws RpcException rpc exception
      */
     @Deprecated
     public List<Double> getConfirmedBlocks(Integer start) throws RpcException {

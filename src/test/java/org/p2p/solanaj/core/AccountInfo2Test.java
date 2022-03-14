@@ -1,19 +1,20 @@
 package org.p2p.solanaj.core;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.p2p.solanaj.rpc.Cluster;
 import org.p2p.solanaj.rpc.RpcClient;
 import org.p2p.solanaj.rpc.types.*;
 import org.p2p.solanaj.utils.JsonUtils;
 
-import java.util.*;
-import java.util.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.*;
 // import static org.junit.Assert.*;
 
-
+@Slf4j
+@Ignore
 public class AccountInfo2Test {
-    public static final Logger LOGGER = Logger.getLogger(AccountInfo2Test.class.getName());
     private final RpcClient client = new RpcClient(Cluster.DEVNET);
     
     @Test
@@ -31,37 +32,37 @@ public class AccountInfo2Test {
             if (accountInfo instanceof AccountInfo) {
                 AccountInfo acc = (AccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "Native account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));
+                log.info(JsonUtils.toJsonPrettyString(acc));
             }
             else if (accountInfo instanceof SplAccountInfo) {
                 SplAccountInfo acc = (SplAccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "SPL-Token account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));
+                log.info(JsonUtils.toJsonPrettyString(acc));
             }
             else if(accountInfo instanceof SplMintInfo) {
                 SplMintInfo acc = (SplMintInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "SPL-Token mint : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));                
+                log.info(JsonUtils.toJsonPrettyString(acc));                
             }      
             else if(accountInfo instanceof MetaDataAccountInfo) {
                 MetaDataAccountInfo acc = (MetaDataAccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "NFT Account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));                
+                log.info(JsonUtils.toJsonPrettyString(acc));                
             }
             else {
                 UnkownAccountInfo acc = (UnkownAccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "Unkown Account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));                    
+                log.info(JsonUtils.toJsonPrettyString(acc));                    
             }
         }
     }
@@ -78,37 +79,37 @@ public class AccountInfo2Test {
             if (accountInfo instanceof AccountInfo) {
                 AccountInfo acc = (AccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "Native account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));
+                log.info(JsonUtils.toJsonPrettyString(acc));
             }
             else if (accountInfo instanceof SplAccountInfo) {
                 SplAccountInfo acc = (SplAccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "SPL-Token account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));
+                log.info(JsonUtils.toJsonPrettyString(acc));
             }
             else if(accountInfo instanceof SplMintInfo) {
                 SplMintInfo acc = (SplMintInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "SPL-Token mint : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));                
+                log.info(JsonUtils.toJsonPrettyString(acc));                
             }      
             else if(accountInfo instanceof MetaDataAccountInfo) {
                 MetaDataAccountInfo acc = (MetaDataAccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "NFT Account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));                
+                log.info(JsonUtils.toJsonPrettyString(acc));                
             }
             else {
                 UnkownAccountInfo acc = (UnkownAccountInfo)accountInfo;
 
-                LOGGER.info(String.format(
+                log.info(String.format(
                     "Unkown Account : %s", address.toString()));
-                LOGGER.info(JsonUtils.toJsonPrettyString(acc));                    
+                log.info(JsonUtils.toJsonPrettyString(acc));                    
             }            
         }
     }       

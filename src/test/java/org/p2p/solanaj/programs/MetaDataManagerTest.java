@@ -19,12 +19,14 @@ import java.util.Base64;
 import java.util.Objects;
 
 import org.bitcoinj.core.Base58;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.near.borshj.BorshBuffer;
 
 import static org.junit.Assert.*;
 
 @Slf4j
+@Ignore
 public class MetaDataManagerTest {
     //public static final Logger LOGGER = Logger.getLogger(TokenMetaProgramTest.class.getName());
     private final RpcClient client = new RpcClient(Cluster.DEVNET);
@@ -263,9 +265,10 @@ public class MetaDataManagerTest {
     @Test
     public void testGetEditionData() {
         // String mintAddress = "DciQ75PXEUQsUkKJy1N6qyyyeYYZGg4Ut6nvMerC1yQc";
-        String mintAddress = "2WUYymgjP6z31pggGK2Sh9LNdDWQ5BXH4HQbwNvFjofq";
         // String mintAddress = "GfkFvEzdwk3w3rfn6u9KjGkjwwhUWGspW3z9txASwanj";
         
+        // edition / master 데이터 다 있음
+        String mintAddress = "2WUYymgjP6z31pggGK2Sh9LNdDWQ5BXH4HQbwNvFjofq";
         
         try {
             MetaDataManager metaDataManager = new MetaDataManager(client);
@@ -359,6 +362,7 @@ public class MetaDataManagerTest {
     public void testGetMetaDataEditionData() throws Exception {
         // 이 민트 주소는 Metadata, Master Edition / Edition Data를 포함하고 있다.
         String mintAddress = "2WUYymgjP6z31pggGK2Sh9LNdDWQ5BXH4HQbwNvFjofq";
+        // String mintAddress = "GffBfiJ6EJuPYBZA9H5fE85MwVidKzjES3dmETj77YUK";
         // Mint account data
         Object mintObj = client.getApi().getAccountInfo2(new PublicKey(mintAddress));
         if(!(mintObj instanceof SplMintInfo)) {

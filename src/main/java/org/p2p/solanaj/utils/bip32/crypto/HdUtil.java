@@ -13,7 +13,7 @@ public class HdUtil {
      * most significant byte first.
      * <p>
      * Prefer long type to hold unsigned ints.
-     *
+     * @param i long value
      * @return ser32(i)
      */
     public static byte[] ser32(long i) {

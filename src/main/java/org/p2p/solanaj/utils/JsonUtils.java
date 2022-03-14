@@ -24,7 +24,7 @@ public class JsonUtils {
      *              예) "value.data.parsed.info.mint"
      * @param map map object
      * @return path에 해당하는 object
-     * @throws Exception
+     * @throws Exception exception
      */
     @SuppressWarnings("unchecked")
     static public Object getObjectFromMap(String path, Object map ) throws Exception {
@@ -52,12 +52,12 @@ public class JsonUtils {
     }
     /**
      *  Object를 대상 object로 casting
-     * @param <T>
-     * @param jsonObject
+     * @param <T> generic class
+     * @param obj generic object
      * @param clazz class
-     * @return T
-     * @throws RpcException
-     * @throws IOException
+     * @return T generic class type
+     * @throws RpcException rpc exception
+     * @throws IOException io exception
      */
     static public <T> T castJson(Object obj, Class<T> clazz) 
         throws RpcException, IOException {
@@ -77,8 +77,8 @@ public class JsonUtils {
      * Object를 jsonstring으로 변환
      * @param obj  object
      * @param pretty indent를 적용하여 출력할지 여부
-     * @return
-     * @throws IOException
+     * @return json string
+     * @throws IOException io exception
      */
     // @SuppressWarnings("unchecked")
     static public String toJsonString(Object obj,boolean pretty) throws IOException {        

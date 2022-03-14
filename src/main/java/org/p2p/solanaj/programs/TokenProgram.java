@@ -35,7 +35,7 @@ public class TokenProgram extends Program {
      * @param amount 64 bit amount of tokens to send
      * @param owner account/private key signing this transaction
      * @param payer fee payer account/private key signing this transaction
-     * @return
+     * @return Transaction Instruction
      */
     public static TransactionInstruction transfer(
             PublicKey source, 
@@ -191,6 +191,7 @@ public class TokenProgram extends Program {
      * @param owner wallet address
      * @param tokenMint token mint address
      * @return associated token address
+     * @throws Exception exception
      */
     public static PublicKey getAssociatedTokenAddress(PublicKey owner, 
         PublicKey tokenMint) throws Exception {
@@ -209,7 +210,7 @@ public class TokenProgram extends Program {
      * @param owner owner wallet address
      * @param tokenMint token mint address
      * @return TransactionInstruction
-     * @throws Exception
+     * @throws Exception exception
      */
     public static TransactionInstruction createAssociatedTokenAccount(
         final PublicKey payer, 
