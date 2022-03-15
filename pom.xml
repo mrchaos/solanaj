@@ -94,6 +94,11 @@
             <artifactId>eddsa</artifactId>
             <version>0.3.0</version>
         </dependency>
+        <dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.36</version>
+		</dependency>	        
         <!--Serialize/Deserialize-->  
         <dependency>
             <groupId>org.near</groupId>
