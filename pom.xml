@@ -104,8 +104,6 @@
             <groupId>org.near</groupId>
             <artifactId>borshj</artifactId>
             <version>0.0.0</version>
-            <scope>system</scope>
-            <systemPath>${pom.basedir}/lib/borshj-0.0.0.jar</systemPath>
           </dependency> 
         <dependency>
             <groupId>ch.qos.logback</groupId>

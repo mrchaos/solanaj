@@ -39,5 +39,4 @@ public class TokenAccountByOwnerTest  {
             assertTrue(false);
         }
     }
-    // TODO : AccountToken Info에서 원하는 Token Info 찾기
 }
