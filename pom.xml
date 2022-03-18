@@ -115,6 +115,19 @@
         </dependency>                
     </dependencies>
 
+    <distributionManagement>
+        <repository>
+            <id>cherry-repo</id>
+            <name>caas_system</name>
+            <url>https://nexus.letscherry.io/repository/cherry-repo/</url>
+        </repository>
+        <snapshotRepository>
+            <id>cherry-snapshots</id>
+            <name>caas_system</name>
+            <url>https://nexus.letscherry.io/repository/cherry-snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <!-- <distributionManagement>
         <repository>
             <id>github</id>
