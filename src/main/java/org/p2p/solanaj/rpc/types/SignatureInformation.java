@@ -12,8 +12,14 @@ import lombok.ToString;
 @NoArgsConstructor
 public class SignatureInformation {
 
+    @Json(name = "blockTime")
+    private long blockTime;
+
+    @Json(name = "confirmationStatus")
+    private String confirmationStatus;
+
     @Json(name = "err")
-    private Object err;
+    private Object err;   
 
     @Json(name = "memo")
     private Object memo;
@@ -26,9 +32,11 @@ public class SignatureInformation {
 
     @SuppressWarnings({ "rawtypes" })
     public SignatureInformation(AbstractMap info) {
+        this.blockTime = (long) ((double)info.get("blockTime"));
+        this.confirmationStatus = (String)info.get("confirmationStatus");
         this.err = info.get("err");
         this.memo = info.get("memo");
         this.signature = (String) info.get("signature");
-        this.err = info.get("slot");
-    }
+        this.slot = (long) ((double)info.get("slot"));
+    }   
 }
