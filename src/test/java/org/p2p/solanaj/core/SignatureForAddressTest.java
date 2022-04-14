@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.util.*;
 @Slf4j
-// @Ignore
+@Ignore
 public class SignatureForAddressTest {
     private final RpcClient client = new RpcClient(Cluster.DEVNET);
     PublicKey mint = new PublicKey("BdtBaw3u9bBiBLjF9unbPDhXTWaWqz6ngSDXo16yXcT9");
